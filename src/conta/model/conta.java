@@ -9,6 +9,7 @@ public class conta {
 	private float saldo;
 
 	public conta(int numero, int agencia, int tipo, String titular, float saldo) {
+		super();
 		this.numero = numero;
 		this.agencia = agencia;
 		this.tipo = tipo;
