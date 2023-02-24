@@ -11,28 +11,28 @@ import conta.util.Cores;
 
 public class Menu {
 
-	public static Scanner leia = new Scanner(System.in);
+	// public static Scanner leia = new Scanner(System.in);
 
 	public static void main(String[] args) {
 		contaController	contas = new contaController();
-
-		int opcao = 0;
-
+		Scanner leia= new Scanner(System.in);
+		
+		int opcao, numero, agencia, tipo, aniversario;
+		String titular;
+		float saldo, limite;
+System.out.println("\n Criar Conta");
 		// Teste da Classe Conta Corrente
-		ContaCorrente cc1 = new ContaCorrente(1, 123, 1, "Adriana", 10000.0f, 1000.0f);
-		cc1.visualizar();
-		cc1.sacar(12000.0f);
-		cc1.visualizar();
-		cc1.depositar(5000.0f);
-		cc1.visualizar();
-
+		ContaCorrente cc1 = new ContaCorrente(contas.gerarNumero(), 123, 1, "Joãozinha", 10000.0f, 1000.0f);
+		ContaCorrente cc2 = new ContaCorrente(contas.gerarNumero(), 124, 1, "Maria", 2000.0f, 1000.0f);
+		ContaPoupanca cp1 = new ContaPoupanca(contas.gerarNumero(), 125, 2, "Mariana", 2000.0f, 12);
+		ContaPoupanca cp2 = new ContaPoupanca(contas.gerarNumero(), 126, 2, "Julina", 2000.0f, 15);
 		// Teste da Classe Conta Poupança
-		ContaPoupanca cp1 = new ContaPoupanca(2, 123, 2, "Victor", 100000.0f, 15);
-		cp1.visualizar();
+		//ContaPoupanca cp1 = new ContaPoupanca(2, 123, 2, "Lucas", 100000.0f, 15);
+		/*cp1.visualizar();
 		cp1.sacar(1000.0f);
 		cp1.visualizar();
 		cp1.depositar(5000.0f);
-		cp1.visualizar();
+		cp1.visualizar();*/
 
 		while (true) {
 
@@ -75,7 +75,28 @@ public class Menu {
 			case 1:
 				System.out.println("\n Criar Conta");
 				System.out.println("\n Digite o número da Agência:");
-				
+				agencia= leia.nextInt();
+				System.out.println("\n Digite o número do Titular:");
+				leia.skip("\\R?");
+				titular = leia.nextLine();
+				do {
+					System.out.println("Digite o Tipo da Conta (1-CC OU 2-CP): ");
+					tipo=leia.nextInt();
+				}while(tipo<1 && tipo>2);
+				System.out.println("Digite o Saldo: ");
+				saldo=leia.nextFloat();
+				switch (tipo) {
+				case 1 ->{
+					System.out.println("Digite o limite de crédito: ");
+					limite=leia.nextFloat();
+					contas.cadastrar(new ContaCorrente(contas.gerarNumero(), agencia, tipo, titular, saldo, limite));
+				}
+				case 2 ->{
+					System.out.println("Digite o aniversário da conta: ");
+				aniversario = leia.nextInt();
+				contas.cadastrar(new ContaPoupanca(contas.gerarNumero(), agencia, tipo, titular,saldo,aniversario));
+				}
+				}
 				keyPress();
 				break;
 				
@@ -87,17 +108,53 @@ public class Menu {
 				break;
 			case 3:
 				System.out.println("\n Buscar Conta por número");
-
+				System.out.println("\n Digite o número da Conta");
+				numero = leia.nextInt();
+				contas.procurarPorNumero(numero);
 				keyPress();
 				break;
 			case 4:
 				System.out.println("\n Atualizar dados da Conta");
-
+				System.out.println("\n Digite o número da Conta: ");
+				numero = leia.nextInt();
+				if(contas.buscarNaCollection(numero) != null) {
+					System.out.println("\n Digite o número da Agência: ");
+					agencia = leia.nextInt();
+					System.out.println("\n Digite o Nome de Titular: ");
+					leia.skip("\\R?");
+					titular = leia.nextLine();
+					System.out.println("\n Digite o Saldo da Conta: ");
+					saldo = leia.nextFloat();
+					
+					tipo = contas.retornaTipo(numero);
+					switch(tipo) {
+					case 1 ->{
+					System.out.println("\n Digite o limite de crédito: ");
+					limite = leia.nextFloat();
+					contas.atualizar(new ContaCorrente(numero, agencia, tipo, titular, saldo, limite));
+					
+					
+					}
+					case 2->{
+						System.out.println("\n Digite o dia do aniversário conta: ");
+						aniversario = leia.nextInt();
+						contas.atualizar(new ContaPoupanca(numero, agencia, tipo, titular, saldo, aniversario));
+					}
+					default ->{
+						System.out.println("\n Tipo de conta inválido! ");
+					}
+					}else {
+						System.out.println("\n Conta não encontrada! ");
+				}
+			}
 				keyPress();
 				break;
+				
 			case 5:
 				System.out.println("\n Apagar Conta");
-
+				System.out.println("\n Digite o número da conta: ");
+				numero=leia.nextInt();
+				contas.deletar(numero);
 				keyPress();
 				break;
 			case 6:
@@ -122,7 +179,8 @@ public class Menu {
 				break;
 			}
 		}
-	}
+}
+
 
 	public static void keyPress() {
 
